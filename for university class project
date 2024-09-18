@@ -1,0 +1,102 @@
+Project: Personal Expense Tracker For University Project
+We are doing this project with 2 members (Shahariar Mahmud Shuvo and Rubait Miah)
+
+The Personal Expense Tracker helps users track their daily expenses and visualize their spending habits through a simple command-line interface or a web application.
+Below We are giving some description of the project - 
+User Authentication: Allow users to create an account and log in.
+Add Expenses: Users can add expenses with categories (e.g., food, transport, entertainment).
+View Expenses: Display a list of expenses, filter by category or date.
+Generate Reports: Create monthly/weekly reports summarizing expenses.
+Data Visualization: Use libraries like Matplotlib or Plotly to visualize spending habits.
+Save Data: Store user data in a CSV file or a SQLite database.
+Tech Stack
+Python: Core language for the project.
+Flask: For creating a web interface (optional).
+SQLite: For database management (or CSV files for simplicity).
+Matplotlib/Plotly: For data visualization.
+
+Below we are providing a Project Structure --
+
+expense_tracker/
+app.py                Main application file
+ models.py             Database models
+ database.py           Database handling
+expense.py           Expense management functions
+ reports.py            Report generation
+requirements.txt     Project dependencies
+ README.md            Project documentation
+
+
+Below we are writing the code for better understanding-  
+
+This is the main application file where users can interact with the expense tracker ---  and it should be in app.py
+
+import csv
+from expense import add_expense, view_expenses, generate_report
+
+def main():
+    while True:
+        print("\nPersonal Expense Tracker")
+        print("1. Add Expense")
+        print("2. View Expenses")
+        print("3. Generate Report")
+        print("4. Exit")
+        
+        choice = input("Choose an option: ")
+        
+        if choice == '1':
+            category = input("Enter the expense category: ")
+            amount = float(input("Enter the expense amount: "))
+            add_expense(category, amount)
+            print("Expense added!")
+        elif choice == '2':
+            view_expenses()
+        elif choice == '3':
+            generate_report()
+        elif choice == '4':
+            print("Exiting the program.")
+            break
+        else:
+            print("Invalid option. Please try again.")
+
+if __name__ == "__main__":
+    main()
+
+
+Next we are doing code for expense.py
+
+
+import csv
+from datetime import datetime
+
+EXPENSE_FILE = 'expenses.csv'
+
+def add_expense(category, amount):
+    with open(EXPENSE_FILE, mode='a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([datetime.now().strftime('%Y-%m-%d %H:%M:%S'), category, amount])
+
+def view_expenses():
+    try:
+        with open(EXPENSE_FILE, mode='r') as file:
+            reader = csv.reader(file)
+            print("\nExpenses:")
+            for row in reader:
+                print(f"Date: {row[0]}, Category: {row[1]}, Amount: ${row[2]}")
+    except FileNotFoundError:
+        print("No expenses recorded yet.")
+
+def generate_report():
+    try:
+        with open(EXPENSE_FILE, mode='r') as file:
+            reader = csv.reader(file)
+            total = 0
+            print("\nExpense Report:")
+            for row in reader:
+                total += float(row[2])
+            print(f"Total Expenses: ${total}")
+    except FileNotFoundError:
+        print("No expenses recorded yet.")
+
+
+
